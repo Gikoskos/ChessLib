@@ -1,0 +1,8 @@
+!*.c
+build/
+.gdbinit
+.gdb_history
+.kateproject
+.kateproject.d/
+src/.chesslib.c.kate-swp
+!Doxyfile
