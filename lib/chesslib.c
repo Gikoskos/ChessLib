@@ -59,16 +59,22 @@ void _addMove(MoveNode **llt, const char *st, const char *en)
 {
 	if (!*llt) {
 		*llt = malloc(sizeof(MoveNode));
-		strncpy((*llt)->start, st, 4);
-		strncpy((*llt)->end, en, 4);
+		(*llt)->start[2] = (*llt)->end[2] = '\0';
+		(*llt)->start[0] = st[0];
+		(*llt)->start[1] = st[1];
+		(*llt)->end[0] = en[0];
+		(*llt)->end[1] = en[1];
 		(*llt)->nxt = NULL;
 		return;
 	}
 	MoveNode *curr = *llt, *new = malloc(sizeof(MoveNode));
 	while (curr->nxt)
 		curr = curr->nxt;
-	strncpy(new->start, st, 4);
-	strncpy(new->end, en, 4);
+	new->start[2] = new->end[2] = '\0';
+	new->start[0] = st[0];
+	new->start[1] = st[1];
+	new->end[0] = en[0];
+	new->end[1] = en[1];
 	new->nxt = NULL;
 	curr->nxt = new;
 }
@@ -255,7 +261,7 @@ int _fillMoveLists(ch_template chb[][8], MoveNode ***move_array, int flag)
 {
 	int i, j, k, l, move_count = 0;
 	char t_st[3], t_en[3];
-	MoveNode **black_m, **white_m;
+	MoveNode **black_m = NULL, **white_m = NULL;
 
 	if (flag == ALL) {
 		black_m = b_moves;
