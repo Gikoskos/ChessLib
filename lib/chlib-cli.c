@@ -256,7 +256,8 @@ extern void clear_screen(void)
 	 *compile it with tgetent and tgetstr I get double free corruption,
 	 *which I don't get if I compile without AI. If you know 
 	 *what's happening please contact me.*/
-	system("clear");
+	if (system("clear") == -1)
+		exit(1);
 # endif
 #else
 	system("cls");
