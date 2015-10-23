@@ -164,7 +164,7 @@ void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int
 			(*curr_leaf)->child[i] = NULL;
 		} else {
 			/*moves with fixed low score are not added to the tree*/
-#ifndef DEBUG
+#if 0
 			temp_eval = _evaluateNext(chb, color, temp_moves[move_list_count]->start, temp_moves[move_list_count]->end);
 			if (temp_eval < -1) {
 				i--;
@@ -173,18 +173,17 @@ void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int
 			}
 #endif
 			(*curr_leaf)->child[i] = malloc(sizeof(MoveTreeNode));
-#ifndef DEBUG
+#if 0
 			(*curr_leaf)->child[i]->score = temp_eval;
 #endif
 			(*curr_leaf)->child[i]->parent = (*curr_leaf);
 			(*curr_leaf)->child[i]->color = color;
 			(*curr_leaf)->child[i]->depth = depth_count+1;
+			(*curr_leaf)->child[i]->start[2] = (*curr_leaf)->child[i]->end[2] = '\0';
 			(*curr_leaf)->child[i]->start[0] = temp_moves[move_list_count]->start[0];
 			(*curr_leaf)->child[i]->start[1] = temp_moves[move_list_count]->start[1];
-			(*curr_leaf)->child[i]->start[2] = '\0';
 			(*curr_leaf)->child[i]->end[0] = temp_moves[move_list_count]->end[0];
 			(*curr_leaf)->child[i]->end[1] = temp_moves[move_list_count]->end[1];
-			(*curr_leaf)->child[i]->end[2] = '\0';
 			temp_moves[move_list_count] = temp_moves[move_list_count]->nxt;
 			_addToAIHeap((void*)(&(*curr_leaf)->child[i]));
 		}
