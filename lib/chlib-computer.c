@@ -9,9 +9,6 @@
 #include <chesslib.h>
 
 #define MOVE_COUNT 50
-#define EVAL_THRESHOLD 0x07D0
-#define ALT_THRESHOLD 0x0BB8
-
 
 #define NULL_50(x)                           \
 {                                            \
@@ -29,6 +26,10 @@ typedef struct MoveTreeNode {
 	struct MoveTreeNode *parent;
 } MoveTreeNode;
 
+typedef struct HeapListNode{
+	void *alloc_mem;
+	struct HeapListNode *nxt;
+} HeapListNode;
 
 /*********
  *globals* 
@@ -36,6 +37,7 @@ typedef struct MoveTreeNode {
 
 static unsigned short max_depth;
 static int CPU_PLAYER;
+static HeapListNode *AIHeap = NULL;
 unsigned short __attribute__((unused)) total_black_pieces;
 unsigned short __attribute__((unused)) total_white_pieces;
 
@@ -54,7 +56,8 @@ bool _makeMove(ch_template chb[][8], char *st_move, char *en_move, const int col
 
 int _Evaluate(ch_template chb[][8], const int color);
 int _evaluateNext(ch_template chb[][8], const int color, char *st, char *en);
-void _deleteAIMoveTree(MoveTreeNode **head);
+void _deleteAIHeap();
+void _addToAIHeap(void **x);
 void _printAIMoveTree(MoveTreeNode *curr_leaf, const int color);
 void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int color, const unsigned short depth_count);
 
@@ -73,26 +76,30 @@ char *getAImove(ch_template chb[][8], const int color, const unsigned short dept
 	_printAIMoveTree(top, color);
 #endif
 
-	_deleteAIMoveTree(&top);
+	_deleteAIHeap();
 	max_depth = 0;
 	return retvalue;
 }
 
-void _deleteAIMoveTree(MoveTreeNode **head)
+void _addToAIHeap(void **x)
 {
-	MoveTreeNode *curr_leaf = (*head);
+	HeapListNode *new = malloc(sizeof(HeapListNode));
+	new->alloc_mem = *x;
+	new->nxt = AIHeap;
+	AIHeap = new;
+}
 
-	while (curr_leaf->child[0]->depth != max_depth)
-		curr_leaf = curr_leaf->child[0];
-
-	for (int i = max_depth; i > 0; i--) {
-		for (int j = 0; j < MOVE_COUNT; j++) {
-			if (curr_leaf->child[j])
-				free(curr_leaf->child[j]);
-		}
-		curr_leaf = curr_leaf->parent;
+void _deleteAIHeap()
+{
+	for (;;) {
+		if (!AIHeap)
+			break;
+		HeapListNode *curr = AIHeap;
+		curr = curr->nxt;
+		free(AIHeap->alloc_mem);
+		free(AIHeap);
+		AIHeap = curr;
 	}
-	free(curr_leaf);
 }
 
 void _printAIMoveTree(MoveTreeNode *curr_leaf, const int color)
@@ -147,6 +154,7 @@ void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int
 		(*curr_leaf) = malloc(sizeof(MoveTreeNode));
 		(*curr_leaf)->depth = 0;
 		(*curr_leaf)->parent = NULL;
+		_addToAIHeap((void*)(&(*curr_leaf)));
 	}
 	for (int i = 0; i < MOVE_COUNT; i++) {
 		while (!temp_moves[move_list_count]) {
@@ -178,6 +186,7 @@ void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int
 			(*curr_leaf)->child[i]->end[1] = temp_moves[move_list_count]->end[1];
 			(*curr_leaf)->child[i]->end[2] = '\0';
 			temp_moves[move_list_count] = temp_moves[move_list_count]->nxt;
+			_addToAIHeap((void*)(&(*curr_leaf)->child[i]));
 		}
 	}
 
