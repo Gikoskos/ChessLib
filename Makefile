@@ -13,13 +13,15 @@ CLILIB := lib/chlib-cli.c
 CLISRC := test/chessgame-cli.c
 INCLUDE_FOLDER := include/
 INC := -I$(INCLUDE_FOLDER)
-prefix := /usr/local/
+prefix := /usr
 
 # Build static library archive of ChessLib for Linux to be linked to your program at compile time #
 chesslib: $(CHESSLIB) $(AIC)
-	$(CC) -c $(CFLAGS) $(INC) $(NDEBUG) $<; \
-	ar csq libchesslib.a chesslib.o; \
-	rm chesslib.o
+	if [ ! -e $(BLDFOLDER) ]; then mkdir $(BLDFOLDER); fi \
+	&& $(CC) -c $(CFLAGS) $(INC) $(NDEBUG) $<; \
+	ar -cq libchesslib.a chesslib.o; \
+	rm chesslib.o; \
+	mv libchesslib.a $(BLDFOLDER)
 
 # Build Linux ELF with debugging flags enabled #
 debug: $(CLISRC) $(CHESSLIB) $(AIC) $(CLILIB)
@@ -58,15 +60,11 @@ dllcompile:
 exe: $(CLISRC) $(DLL)
 	$(CC) -o chessgame-cli.exe $^
 
-# Run the Linux executables #
-run:
-	@exec ./$(BLDFOLDER)/$(ELF)
+.PHONY: all install cleanall clean cleantxt tests
 
-runW:
-	@exec ./$(BLDFOLDER)/$(ELF)Wall
+tests: debug fools scholars tree blackburne
 
-.PHONY: all install clean cleantxt
-all: chessgame-cli chesslib debug fools scholars tree
+all: chesslib debug fools scholars tree
 
 cleanall: clean cleantxt
 
@@ -80,5 +78,5 @@ cleantxt:
 	rm -rf build/*.txt \
 	rm *.txt
 
-install: chessgame-cli
-	install -m 0755 $(BLDFOLDER)/$< $(prefix)/bin
+install: chesslib
+	install -m 0755 $(BLDFOLDER)/libchesslib.a $(prefix)/lib
