@@ -35,7 +35,7 @@ int main(void)
 			if (pr_moves) {
 				printf("\t\t\t***WHITE MOVES***\n");
 				printWhiteMoves();
-				printf("\n\t\t\t***BLACK MOVES***\n");
+				printf("\t\t\t***BLACK MOVES***\n");
 				printBlackMoves();
 				pr_moves = false;
 			}
@@ -51,7 +51,7 @@ int main(void)
 					free(playerInput);
 					playerInput = NULL;
 					deleteMoves();
-					break;
+					return 0;
 				}
 			} else if (strlen(playerInput) == 1) {
 				pr_moves = true;

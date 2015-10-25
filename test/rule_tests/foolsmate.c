@@ -29,7 +29,7 @@ int main(void)
 	printBoard(chess_board, 'l');
 	printf("\t\t\t***WHITE MOVES***\n");
 	printWhiteMoves();
-	printf("\n\t\t\t***BLACK MOVES***\n");
+	printf("\t\t\t***BLACK MOVES***\n");
 	printBlackMoves();
 
 	if (!black_move_count)
