@@ -9,6 +9,33 @@
 #include <chesslib.h>
 #include <chlib-cli.h>
 
+typedef struct CastlingBool {
+	bool WR_left;	/*white rook at A1*/
+	bool WR_right;	/*white rook at H1*/
+	bool BR_left;	/*black rook at A8*/
+	bool BR_right;	/*black rook at H8*/
+	bool KBlack;	/*black king*/
+	bool KWhite;	/*white king*/
+} CastlingBool;
+
+
+#define deleteBlackMoves()                                             \
+{                                                                      \
+    int move_list_piece_index = 0;                                     \
+    while (move_list_piece_index < 6)                                  \
+        deleteMoveList(&b_moves[move_list_piece_index++]);             \
+}
+
+#define deleteWhiteMoves()                                             \
+{                                                                      \
+    int move_list_piece_index = 0;                                     \
+    while (move_list_piece_index < 6)                                  \
+        deleteMoveList(&w_moves[move_list_piece_index++]);             \
+}
+
+#define ALL 0x1eae
+
+
 /*********
  *globals*
  *********/
