@@ -58,7 +58,7 @@ int _Evaluate(ch_template chb[][8], const int color);
 int _evaluateNext(ch_template chb[][8], const int color, char *st, char *en);
 void _deleteAIHeap();
 void _addToAIHeap(void **x);
-void _printAIMoveTree(MoveTreeNode *curr_leaf, const int color);
+void _printAIMoveTree(MoveTreeNode *curr_leaf);
 void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int color, const unsigned short depth_count);
 
 
@@ -68,12 +68,12 @@ char *getAImove(ch_template chb[][8], const int color, const unsigned short dept
 		return NULL;
 
 	CPU_PLAYER = color;
-	max_depth = depth;
+	max_depth = depth - 1;
 	MoveTreeNode *top = NULL;
 	char *retvalue = NULL;
 	_createAIMoveTree(&top, chb, color, 0);
 #ifdef DEBUG
-	_printAIMoveTree(top, color);
+	_printAIMoveTree(top);
 #endif
 
 	_deleteAIHeap();
@@ -102,7 +102,7 @@ void _deleteAIHeap()
 	}
 }
 
-void _printAIMoveTree(MoveTreeNode *curr_leaf, const int color)
+void _printAIMoveTree(MoveTreeNode *curr_leaf)
 {
 	if (!curr_leaf)
 		return;
@@ -110,24 +110,26 @@ void _printAIMoveTree(MoveTreeNode *curr_leaf, const int color)
 		if ((curr_leaf->depth > max_depth) || (!curr_leaf->child[i]))
 			return;
 		for (int j = 0; j < (curr_leaf->depth); j++) putchar('\t');
-		if (!(curr_leaf->depth)) {
-			printf("At depth %d, initial moves for %s are: %s->%s", curr_leaf->depth, (color == BLACK)?"Black":"White", 
+		/*if (curr_leaf->start[0] == 'T') {
+			_printAIMoveTree(curr_leaf->child[i]);
+		} else */if (curr_leaf->child[i]->depth == 1) {
+			printf("At depth %d, initial moves for %s are: %s->%s", curr_leaf->child[i]->depth, (curr_leaf->child[i]->color == BLACK)?"Black":"White", 
 				   curr_leaf->child[i]->start, curr_leaf->child[i]->end);
 #ifdef DEBUG
-			printf(", current score is %d\n", curr_leaf->score);
+			printf(", current score is %d\n", curr_leaf->child[i]->score);
 #else
 			putchar('\n');
 #endif
 		} else {
-			printf("At depth %d, for %s move %s->%s: %s moves %s->%s", curr_leaf->depth, (color == BLACK)?"Black's":"White's", 
-				   curr_leaf->start, curr_leaf->end, (color == BLACK)?"White":"Black", curr_leaf->child[i]->start, curr_leaf->child[i]->end);
+			printf("At depth %d, for %s move %s->%s: %s moves %s->%s", curr_leaf->child[i]->depth, (curr_leaf->child[i]->color == BLACK)?"Black's":"White's", 
+				   curr_leaf->start, curr_leaf->end, (curr_leaf->child[i]->color == BLACK)?"White":"Black", curr_leaf->child[i]->start, curr_leaf->child[i]->end);
 #ifdef DEBUG
-			printf(", current score is %d\n", curr_leaf->score);
+			printf(", current score is %d\n", curr_leaf->child[i]->score);
 #else
 			putchar('\n');
 #endif
 		}
-		_printAIMoveTree(curr_leaf->child[i], (color == WHITE)?BLACK:WHITE);
+		_printAIMoveTree(curr_leaf->child[i]);
 	}
 }
 
@@ -136,23 +138,17 @@ void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int
 	ch_template next_chb[8][8];
 	int __attribute__((unused)) temp_eval = 0;
 	int move_list_count = 0;
-	unsigned short no_move_count = 0;
 
 	MoveNode *temp_moves[6];
 	getAllMoves(chb, color);
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 6; i++)
 		temp_moves[i] = (color == BLACK)?b_moves[i]:w_moves[i];
-		if (!temp_moves[i]) no_move_count++;
-	}
-
-	/*moves that lead to checkmate for given cpu player are not added to the tree*/
-	if (!no_move_count && CPU_PLAYER == color) {
-		return;
-	}
 
 	if (!depth_count) {
 		(*curr_leaf) = malloc(sizeof(MoveTreeNode));
 		(*curr_leaf)->depth = 0;
+		(*curr_leaf)->start[0] = 'T';
+		(*curr_leaf)->start[1] = '\0';
 		(*curr_leaf)->parent = NULL;
 		_addToAIHeap((void*)(&(*curr_leaf)));
 	}
@@ -163,42 +159,41 @@ void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int
 		if (move_list_count > 5) {
 			(*curr_leaf)->child[i] = NULL;
 		} else {
-			/*moves with fixed low score are not added to the tree*/
-#if 0
-			temp_eval = _evaluateNext(chb, color, temp_moves[move_list_count]->start, temp_moves[move_list_count]->end);
-			if (temp_eval < -1) {
-				i--;
-				temp_moves[move_list_count] = temp_moves[move_list_count]->nxt;
-				continue;
+			if (color != CPU_PLAYER) {
+				if (_evaluateNext(chb, (color == BLACK)?WHITE:BLACK, temp_moves[move_list_count]->start, temp_moves[move_list_count]->end) > (*curr_leaf)->score) {
+					(*curr_leaf)->child[i] = NULL;
+					temp_moves[move_list_count] = temp_moves[move_list_count]->nxt;
+					continue;
+				}
 			}
-#endif
 			(*curr_leaf)->child[i] = malloc(sizeof(MoveTreeNode));
-#if 0
-			(*curr_leaf)->child[i]->score = temp_eval;
-#endif
 			(*curr_leaf)->child[i]->parent = (*curr_leaf);
 			(*curr_leaf)->child[i]->color = color;
-			(*curr_leaf)->child[i]->depth = depth_count+1;
+			(*curr_leaf)->child[i]->depth = depth_count + 1;
 			(*curr_leaf)->child[i]->start[2] = (*curr_leaf)->child[i]->end[2] = '\0';
 			(*curr_leaf)->child[i]->start[0] = temp_moves[move_list_count]->start[0];
 			(*curr_leaf)->child[i]->start[1] = temp_moves[move_list_count]->start[1];
 			(*curr_leaf)->child[i]->end[0] = temp_moves[move_list_count]->end[0];
 			(*curr_leaf)->child[i]->end[1] = temp_moves[move_list_count]->end[1];
-			temp_moves[move_list_count] = temp_moves[move_list_count]->nxt;
 			_addToAIHeap((void*)(&(*curr_leaf)->child[i]));
+			temp_moves[move_list_count] = temp_moves[move_list_count]->nxt;
 		}
 	}
 
-	if (depth_count <= max_depth) {
-		for (int i = 0; i < MOVE_COUNT; i++) {
-			if (!(*curr_leaf)->child[i]) {
-				return;
-			}
-			_copyBoard(next_chb, chb);
-			_makeMove(next_chb, (*curr_leaf)->child[i]->start, (*curr_leaf)->child[i]->end, (*curr_leaf)->child[i]->color, false);
-#ifdef DEBUG
-			(*curr_leaf)->child[i]->score = _Evaluate(next_chb, color);
-#endif
+	for (int i = 0; i < MOVE_COUNT; i++) {
+		if (!(*curr_leaf)->child[i]) {
+			return;
+		}
+		_copyBoard(next_chb, chb);
+		_makeMove(next_chb, (*curr_leaf)->child[i]->start, (*curr_leaf)->child[i]->end, (*curr_leaf)->child[i]->color, false);
+		(*curr_leaf)->child[i]->score = _Evaluate(next_chb, color);
+
+		/*if (color != CPU_PLAYER && (*curr_leaf)->child[i]->score > (*curr_leaf)->score) {
+			free((*curr_leaf)->child[i]);
+			(*curr_leaf)->child[i] = NULL;
+		} else */ if (!depth_count) {
+			_createAIMoveTree(&((*curr_leaf)->child[i]), next_chb, color, depth_count+1);
+		} else if (depth_count <= max_depth) {
 			_createAIMoveTree(&((*curr_leaf)->child[i]), next_chb, (color == BLACK)?WHITE:BLACK, depth_count+1);
 		}
 	}
