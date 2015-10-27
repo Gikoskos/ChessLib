@@ -2,7 +2,7 @@
  *                          scholarsmate.c                          *
  *                 scholar's mate to test chesslib                  *
  *                                                                  *
- *                 (C)2015 <cyberchiller@gmail.com>                 *
+ *               (C)2015 <georgekoskerid@outlook.com>               *
  *                                                                  *
  ********************************************************************/
 

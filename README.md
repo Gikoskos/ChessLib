@@ -1,8 +1,8 @@
 # ChessLib
 
-WIP
+Easy to use chess library in C, for a single chess game.
 
-## TODO
+# Usage
 
 WIP
 

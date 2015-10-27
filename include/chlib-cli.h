@@ -1,8 +1,8 @@
 /**********************************************************************
  *                            chlib-cli.h                             *
- *      function interface specific to a command-line chess game      *
+ *           function interface for a command-line chess game         *
  *                                                                    *
- *                  (C)2015 <cyberchiller@gmail.com>                  *
+ *                (C)2015 <georgekoskerid@outlook.com>                *
  *                                                                    *
  **********************************************************************/
 

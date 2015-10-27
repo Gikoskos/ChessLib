@@ -2,7 +2,7 @@
  *                              tree.c                              *
  *          various tests for the AI move tree functions            *
  *                                                                  *
- *                 (C)2015 <cyberchiller@gmail.com>                 *
+ *              (C)2015 <georgekoskerid@outlook.com>                *
  *                                                                  *
  ********************************************************************/
 
@@ -20,7 +20,7 @@ int main(void)
 	ch_template chb[8][8];
 	initChessboard(chb);
 
-	//playMoves(chb, &round, 9, "e2e4", "e7e5", "g1f3", "b8c6", "f1c4", "c6d4", "f3e5", "d8g5", "e5f7");
+	playMoves(chb, &round, 2, "e2e4", "e7e5");//, "g1f3", "b8c6", "f1c4", "c6d4", "f3e5", "d8g5", "e5f7");
 	start = clock();
 	getAImove(chb, round, TEST_DEPTH);
 	stop = clock();
