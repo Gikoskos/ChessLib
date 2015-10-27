@@ -37,7 +37,7 @@ typedef struct HeapListNode{
 
 static unsigned short max_depth;
 static int CPU_PLAYER;
-static HeapListNode *AIHeap = NULL;
+static HeapListNode *AIHeap;
 unsigned short __attribute__((unused)) total_black_pieces;
 unsigned short __attribute__((unused)) total_white_pieces;
 
@@ -67,12 +67,13 @@ char *getAImove(ch_template chb[][8], const int color, const unsigned short dept
 	if (!depth || (color != BLACK && color != WHITE))
 		return NULL;
 
+	AIHeap = NULL;
 	CPU_PLAYER = color;
 	max_depth = depth - 1;
 	MoveTreeNode *top = NULL;
 	char *retvalue = NULL;
 	_createAIMoveTree(&top, chb, color, 0);
-#ifdef DEBUG
+#if 0
 	_printAIMoveTree(top);
 #endif
 
@@ -110,9 +111,7 @@ void _printAIMoveTree(MoveTreeNode *curr_leaf)
 		if ((curr_leaf->depth > max_depth) || (!curr_leaf->child[i]))
 			return;
 		for (int j = 0; j < (curr_leaf->depth); j++) putchar('\t');
-		/*if (curr_leaf->start[0] == 'T') {
-			_printAIMoveTree(curr_leaf->child[i]);
-		} else */if (curr_leaf->child[i]->depth == 1) {
+		if (curr_leaf->child[i]->depth == 1) {
 			printf("At depth %d, initial moves for %s are: %s->%s", curr_leaf->child[i]->depth, (curr_leaf->child[i]->color == BLACK)?"Black":"White", 
 				   curr_leaf->child[i]->start, curr_leaf->child[i]->end);
 #ifdef DEBUG
@@ -188,10 +187,7 @@ void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int
 		_makeMove(next_chb, (*curr_leaf)->child[i]->start, (*curr_leaf)->child[i]->end, (*curr_leaf)->child[i]->color, false);
 		(*curr_leaf)->child[i]->score = _Evaluate(next_chb, color);
 
-		/*if (color != CPU_PLAYER && (*curr_leaf)->child[i]->score > (*curr_leaf)->score) {
-			free((*curr_leaf)->child[i]);
-			(*curr_leaf)->child[i] = NULL;
-		} else */ if (!depth_count) {
+		if (!depth_count) {
 			_createAIMoveTree(&((*curr_leaf)->child[i]), next_chb, color, depth_count+1);
 		} else if (depth_count <= max_depth) {
 			_createAIMoveTree(&((*curr_leaf)->child[i]), next_chb, (color == BLACK)?WHITE:BLACK, depth_count+1);
