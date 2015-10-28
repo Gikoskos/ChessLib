@@ -210,16 +210,13 @@ struct MoveNode {
 typedef struct MoveNode MoveNode;
 
 
+
 /*
  * 
  *round, for both players; each index of the array refers to each piece like so:
  *0 is Pawn (P), 1 is King (K), 2 is Queen (Q), 3 is Rook (R), 4 is Knight (N), 5 is Bishop (B)*/
 MoveNode *b_moves[6];
 MoveNode *w_moves[6];
-
-/* Global counters for the total moves each player (Black and White) can do on each round.
- * They get a value after every getMoveList() call. */
-unsigned white_move_count, black_move_count;
 
 
 /*! \var BlackKing

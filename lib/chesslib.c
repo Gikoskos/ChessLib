@@ -9,15 +9,6 @@
 #include <chesslib.h>
 #include <chlib-cli.h>
 
-typedef struct CastlingBool {
-	bool WR_left;	/*white rook at A1*/
-	bool WR_right;	/*white rook at H1*/
-	bool BR_left;	/*black rook at A8*/
-	bool BR_right;	/*black rook at H8*/
-	bool KBlack;	/*black king*/
-	bool KWhite;	/*white king*/
-} CastlingBool;
-
 
 #define deleteBlackMoves()                                             \
 {                                                                      \
@@ -36,9 +27,23 @@ typedef struct CastlingBool {
 #define ALL 0x1eae
 
 
+typedef struct CastlingBool {
+	bool WR_left;	/*white rook at A1*/
+	bool WR_right;	/*white rook at H1*/
+	bool BR_left;	/*black rook at A8*/
+	bool BR_right;	/*black rook at H8*/
+	bool KWhite;	/*white king*/
+	bool KBlack;	/*black king*/
+} CastlingBool;
+
+
 /*********
  *globals*
  *********/
+
+/* Global counters for the total moves each player (Black and White) can do on each round.
+ * They get a value after every getMoveList() call. */
+static unsigned white_move_count, black_move_count;
 
 static unsigned w_enpassant_round_left = 0;
 static unsigned w_enpassant_round_right = 0;
@@ -53,7 +58,6 @@ static unsigned black_removed_moves;
 
 CastlingBool check_castling = {true, true, true, true, true, true};
 
-unsigned black_move_count, white_move_count;
 
 KingState WhiteKing = safe, BlackKing = safe;
 
@@ -740,13 +744,11 @@ bool _makeMove(ch_template chb[][8], char *st_move, char *en_move, const int col
 	if (!en_move || !st_move)
 		return false;
 
-	if (islower(st_move[0]) || islower(en_move[0]) 
-		|| islower(st_move[2]) || islower(en_move[2])) {
-		st_move[0] = (char)toupper(st_move[0]);
-		en_move[0] = (char)toupper(en_move[0]);
-		st_move[2] = (char)toupper(st_move[2]);
-		en_move[2] = (char)toupper(en_move[0]);
-	}
+
+	st_move[0] = (char)toupper(st_move[0]);
+	en_move[0] = (char)toupper(en_move[0]);
+	st_move[2] = (char)toupper(st_move[2]);
+	en_move[2] = (char)toupper(en_move[2]);
 
 	unsigned short startx, starty, endx, endy;
 
