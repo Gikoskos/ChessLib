@@ -30,7 +30,6 @@ int main(void)
 			break;
 		if (total_rounds > TEST_ROUNDS) {
 			clear_screen();
-			printf("\nWHITE_MOVE_COUNT = %u\t BLACK_MOVE_COUNT = %u\n", white_move_count, black_move_count);
 			printBoard(chess_board, 'l');
 			if (pr_moves) {
 				printf("\t\t\t***WHITE MOVES***\n");
