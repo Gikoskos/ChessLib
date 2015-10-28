@@ -32,9 +32,9 @@ int main(void)
 	printf("\t\t\t***BLACK MOVES***\n");
 	printBlackMoves();
 
-	if (!black_move_count)
+	if (BlackKing == checkmate)
 		printf("White wins!\n");
-	if (!white_move_count)
+	if (WhiteKing == checkmate)
 		printf("Black wins!\n");
 	return 0;
 }

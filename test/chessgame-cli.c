@@ -23,10 +23,10 @@ int main(void)
 
 	start_move[2] = '\0';
 	end_move[2] = '\0';
-	while (1) {
+	for (;;) {
 		deleteMoves();
 		getAllMoves(chess_board, round);
-		if (!black_move_count || !white_move_count)
+		if (BlackKing == checkmate || WhiteKing == checkmate)
 			break;
 		if (total_rounds > TEST_ROUNDS) {
 			clear_screen();
@@ -84,9 +84,9 @@ int main(void)
 	clear_screen();
 	printBoard(chess_board, 'l');
 	pr_moves = false;
-	if (!black_move_count)
+	if (BlackKing == checkmate)
 		printf("White wins!\n");
-	if (!white_move_count)
+	if (WhiteKing == checkmate)
 		printf("Black wins!\n");
 	return 0;
 }
