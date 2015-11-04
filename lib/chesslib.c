@@ -7,7 +7,6 @@
  *********************************************************************/
 
 #include <chesslib.h>
-#include <chlib-cli.h>
 
 
 #define deleteBlackMoves()                                             \
