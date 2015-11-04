@@ -1,12 +1,12 @@
 CC              = gcc
 DEBUG           = -g -DDEBUG -O1
-CFLAGS          = -Wall -std=c11 -I./include
+CFLAGS          = -Wall -std=c11 -I./include -I../../include
 MORE_WARNINGS   = -Wextra -pedantic
 RLS             = ChessLib32.exe
 DBG             = debug.exe
 DWARF2          = -ggdb
 LINKER          = -lcomctl32 -lgdi32 -luxtheme
-CHESSLIB        = lib/chesslib.c
+CHESSLIB        = ../../lib/chesslib.c
 RELEASE         = -mwindows
 WINDOW_SOURCE   = ChessLib32.c
 CHLIB_WIN32     = chessboard_win32.c chesspieces_win32.c
