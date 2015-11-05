@@ -12,12 +12,17 @@
 #include <uxtheme.h>
 #include <wchar.h>
 #include <chesslib.h>
-#include "res/resource.h"
 
 #define WINDOW_LENGTH 650
 #define WINDOW_HEIGHT 665
 
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
+
 #define IDC_ABOUTBUTTON 0xfade
+#define IDC_QUITBUTTON 0xdeaf
+#define IDD_ABOUTDLG   101
 
 
 typedef struct drawnSquareData {
@@ -59,7 +64,7 @@ VOID getChessLetterPos(_In_ POINT mouse, _Out_ POINT *out);
 
 VOID drawChessLetters(_In_ HWND hwnd);
 
-BOOL movePiece(_In_ POINT picked, _In_ POINT dropped, _Out_ PRECT square, _Out_ HWND *next_piece);
+BOOL movePiece(_In_ POINT picked, _In_ POINT dropped, _Out_ PRECT square);
 
 INT getPieceLetterColor(_In_ HWND hwnd);
 

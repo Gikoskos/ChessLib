@@ -35,7 +35,7 @@
 //Global integers to store the working area's dimension in pixels
 static int WORKING_AREA_WIDTH, WORKING_AREA_HEIGHT;
 
-static HWND AboutButton;
+static HWND AboutButton, QuitButton;
 
 static HANDLE CHLIB32_ICON;
 
@@ -135,6 +135,10 @@ LRESULT CALLBACK MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 				WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
 				675, 500, 80, 40, hwnd, (HMENU)IDC_ABOUTBUTTON, 
 				(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE), NULL);
+			QuitButton = CreateWindowEx(0, "BUTTON", "Quit",
+				WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+				695, 580, 40, 25, hwnd, (HMENU)IDC_QUITBUTTON,
+				(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE), NULL);
 #if 0
 			prDSquares();
 #endif
@@ -182,6 +186,8 @@ LRESULT CALLBACK MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 				case IDC_ABOUTBUTTON:
 					InitAboutDlg(hwnd);
 					break;
+				case IDC_QUITBUTTON:
+					SendMessage(hwnd, WM_CLOSE, (WPARAM)0, (LPARAM)0);
 				default:
 					break;
 			}
@@ -197,18 +203,13 @@ LRESULT CALLBACK MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 						current_piece_clicked = (HWND)lParam;
 					} else {
 						PRECT temp_square = malloc(sizeof(RECT));
-						HWND piece_on_clicked_square = NULL;
 
-						if (!movePiece(clicked_point, dropped_point, temp_square, &piece_on_clicked_square)) {
+						if (!movePiece(clicked_point, dropped_point, temp_square)) {
 							MoveWindow(current_piece_clicked, clicked_point.x, clicked_point.y, 50, 20, TRUE);
 						} else {
 							temp_square->right = temp_square->right - 60;
 							temp_square->bottom = temp_square->bottom - 45;
 							MoveWindow(current_piece_clicked, temp_square->right, temp_square->bottom, 50, 20, TRUE);
-							if (piece_on_clicked_square) {
-								if (!EnableWindow(current_piece_clicked, FALSE)) printf("SUCESS\n");
-								//MoveWindow(current_piece_clicked, 2000, 2000, 50, 20, TRUE);
-							}
 							copyToChb32();
 							ROUND = (ROUND == WHITE)?BLACK:WHITE;
 							deleteMoves();

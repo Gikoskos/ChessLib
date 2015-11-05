@@ -215,7 +215,7 @@ VOID DrawChessboard(HWND hwnd, HDC chessboard_dc)
 	LineTo(chessboard_dc, 640, 665);
 }
 
-BOOL movePiece(POINT picked, POINT dropped, PRECT square, HWND *next_piece)
+BOOL movePiece(POINT picked, POINT dropped, PRECT square)
 {
 	BOOL retvalue = FALSE;
 
@@ -250,8 +250,8 @@ BOOL movePiece(POINT picked, POINT dropped, PRECT square, HWND *next_piece)
 
 	if (_isOnList(temp_st, temp_en, piece, color)) {
 		if (drawnSquares[en_i][en_j].curr_piece != NOPIECE) {
-			printf("%p\n", drawnSquares[en_i][en_j].piece_handle);
-			*next_piece = drawnSquares[en_i][en_j].piece_handle;
+			//MoveWindow(drawnSquares[en_i][en_j].piece_handle, 630, 30, 50, 20, TRUE);
+			EnableWindow(drawnSquares[en_i][en_j].piece_handle, FALSE);
 		}
 		drawnSquares[en_i][en_j].curr_piece       = piece;
 		drawnSquares[en_i][en_j].piece_handle     = drawnSquares[st_i][st_j].piece_handle;

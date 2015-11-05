@@ -1,0 +1,24 @@
+ /***********************************************\
+ *   Simple ChessLib Win32 Frontend for testing  *
+ *                  resources.rc                 *
+ *           George Koskeridis (C) 2015          *
+ \***********************************************/
+
+#include <windows.h>
+#include <commctrl.h>
+#include <richedit.h>
+#include "ChessLib32.h"
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_ABOUTDLG DIALOG 0, 0, 201, 102
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
+CAPTION "About"
+FONT 8, "Ms Shell Dlg"
+{
+    CTEXT           "George Koskeridis (c) 2015", 0, 21, 76, 86, 9, SS_CENTER, WS_EX_LEFT
+    CTEXT           "Win32 frontend for testing ChessLib (very early version)", 0, 14, 15, 101, 21, WS_DLGFRAME | SS_CENTER | SS_SUNKEN, WS_EX_LEFT
+    DEFPUSHBUTTON   "OK", IDOK, 135, 18, 50, 69, 0, WS_EX_LEFT
+}
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDI_CHLIB32_ICON   ICON           "icons\\chesslib_icon64.ico"
