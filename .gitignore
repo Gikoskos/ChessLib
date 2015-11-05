@@ -7,3 +7,4 @@ build/
 src/.chesslib.c.kate-swp
 Doxyfile
 GUI_frontends/ChessLibWin32/*.exe
+GUI_frontends/ChessLibWin32/*.o
