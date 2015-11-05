@@ -10,7 +10,7 @@
 #define prDSquares()                                                        \
 {                                                                           \
     for (int i = 0; i < 8; i++) {                                           \
-	    for (int j = 0; j < 8; j++) {                                       \
+        for (int j = 0; j < 8; j++) {                                       \
             printf(".squareArea = (left = "                                 \
             "%ld, top = %ld, right = %ld,"                                  \
             " bottom = %ld)\n", drawnSquares[i][j].squareArea.left,         \
@@ -21,8 +21,8 @@
             drawnSquares[i][j].square[0], drawnSquares[i][j].square[1]);    \
             printf(".curr_piece = %c\n", drawnSquares[i][j].curr_piece);    \
             putchar('\n');                                                  \
-		}                                                                   \
-		printf("--------------\n\n");                                       \
+    	}                                                                   \
+    	printf("--------------\n\n");                                       \
     }                                                                       \
 }
 #endif
