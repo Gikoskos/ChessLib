@@ -26,8 +26,8 @@ BOOL BlinkThisSquare(HWND hwnd, POINT mouse)
 	if (!mouse.x && !mouse.y) return FALSE;
 
 	BOOL retvalue = FALSE;
-	int i, j, sel_piece;
-	char sel_square[2] = {'n', 'o'};
+	int i, j
+	char sel_square[2] = {'n', 'o'}, sel_piece = '\0';
 
 	for (i = 0; i < 8; i++) {
 		for (j = 0; j < 8; j++) {
@@ -47,7 +47,7 @@ BOOL BlinkThisSquare(HWND hwnd, POINT mouse)
 			}
 		}
 	}
-	if (sel_square[0] == 'n') return retvalue;
+	if (sel_square[0] == 'n' || sel_piece == '\0') return retvalue;
 
 	MoveNode *curr;
 	int p;
