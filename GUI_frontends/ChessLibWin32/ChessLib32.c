@@ -43,6 +43,8 @@ static char chlib32_iconpath[] = "icons\\chesslib_icon64.ico";
 
 static ch_template chb32[8][8];
 
+static BOOL GAMEOVER;
+
  /**********************
    Function prototypes
  **********************/
@@ -111,7 +113,8 @@ VOID gameOver(HWND hwnd)
 {
 	MessageBox(hwnd, (WhiteKing == checkmate)?"Black player wins!":"White player wins!",
 	"Game Over", MB_OK | MB_ICONASTERISK);
-	SendMessage(hwnd, WM_DESTROY, (WPARAM)0, (LPARAM)0);
+	GAMEOVER = TRUE;
+	//SendMessage(hwnd, WM_DESTROY, (WPARAM)0, (LPARAM)0);
 }
 
 LRESULT CALLBACK MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -144,15 +147,17 @@ LRESULT CALLBACK MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 #endif
 			break;
 		case WM_MOUSEMOVE:
-			m_pointer.x = GET_X_LPARAM(lParam);
-			m_pointer.y = GET_Y_LPARAM(lParam);
-			if (!clicked) {
-				if (BlinkThisSquare(hwnd, m_pointer))
-					return PostMessage(hwnd, WM_PAINT, (WPARAM)0, (LPARAM)0);
-			} else {
-				MoveWindow(current_piece_clicked, m_pointer.x - 25, m_pointer.y - 10, 50, 20, TRUE);
-				dropped_point.x = m_pointer.x - 10;
-				dropped_point.y = m_pointer.y - 5;
+			if (!GAMEOVER) {
+				m_pointer.x = GET_X_LPARAM(lParam);
+				m_pointer.y = GET_Y_LPARAM(lParam);
+				if (!clicked) {
+					if (BlinkThisSquare(hwnd, m_pointer))
+						return PostMessage(hwnd, WM_PAINT, (WPARAM)0, (LPARAM)0);
+				} else {
+					MoveWindow(current_piece_clicked, m_pointer.x - 25, m_pointer.y - 10, 50, 20, TRUE);
+					dropped_point.x = m_pointer.x - 10;
+					dropped_point.y = m_pointer.y - 5;
+				}
 			}
 			//GetWindowPlacement(hwnd, &mainWindowStatus);
 			//printf("TOP: %ld // LEFT: %ld\n", mainWindowStatus.rcNormalPosition.top, mainWindowStatus.rcNormalPosition.left);
@@ -193,34 +198,36 @@ LRESULT CALLBACK MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 			}
 			switch (HIWORD(wParam)) {
 				case STN_CLICKED:
-					if ((HWND)lParam == AboutButton) break;
+					if (!GAMEOVER) {
+						if ((HWND)lParam == AboutButton) break;
 
-					if (!clicked) {
-						if (ROUND != getPieceLetterColor((HWND)lParam)) break;
-						getChessLetterPos(m_pointer, &clicked_point);
-						clicked = TRUE;
-						resetBlinkingSquares(hwnd);
-						current_piece_clicked = (HWND)lParam;
-					} else {
-						PRECT temp_square = malloc(sizeof(RECT));
-
-						if (!movePiece(clicked_point, dropped_point, temp_square)) {
-							MoveWindow(current_piece_clicked, clicked_point.x, clicked_point.y, 50, 20, TRUE);
+						if (!clicked) {
+							if (ROUND != getPieceLetterColor((HWND)lParam)) break;
+							getChessLetterPos(m_pointer, &clicked_point);
+							clicked = TRUE;
+							resetBlinkingSquares(hwnd);
+							current_piece_clicked = (HWND)lParam;
 						} else {
-							temp_square->right = temp_square->right - 60;
-							temp_square->bottom = temp_square->bottom - 45;
-							MoveWindow(current_piece_clicked, temp_square->right, temp_square->bottom, 50, 20, TRUE);
-							copyToChb32();
-							ROUND = (ROUND == WHITE)?BLACK:WHITE;
-							deleteMoves();
-							getAllMoves(chb32, ROUND);
-							if (BlackKing == checkmate || WhiteKing == checkmate)
-								gameOver(hwnd);
-						}
-						free(temp_square);
+							PRECT temp_square = malloc(sizeof(RECT));
 
-						current_piece_clicked = NULL;
-						clicked = FALSE;
+							if (!movePiece(clicked_point, dropped_point, temp_square)) {
+								MoveWindow(current_piece_clicked, clicked_point.x, clicked_point.y, 50, 20, TRUE);
+							} else {
+								temp_square->right = temp_square->right - 60;
+								temp_square->bottom = temp_square->bottom - 45;
+								MoveWindow(current_piece_clicked, temp_square->right, temp_square->bottom, 50, 20, TRUE);
+								copyToChb32();
+								ROUND = (ROUND == WHITE)?BLACK:WHITE;
+								deleteMoves();
+								getAllMoves(chb32, ROUND);
+								if (BlackKing == checkmate || WhiteKing == checkmate)
+									gameOver(hwnd);
+							}
+							free(temp_square);
+
+							current_piece_clicked = NULL;
+							clicked = FALSE;
+						}
 					}
 					break;
 				case STN_DISABLE:
@@ -270,8 +277,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	WORKING_AREA_HEIGHT = wrkspace_px.bottom;
 
 	g_hInst = hInstance;
+	GAMEOVER = FALSE;
 
-	//Initialisations for the ChessLib modules
+	//Initialisations for ChessLib
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++)
 			drawnSquares[i][j].piece_handle = NULL;
