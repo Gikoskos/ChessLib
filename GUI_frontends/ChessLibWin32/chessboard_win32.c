@@ -26,7 +26,7 @@ BOOL BlinkThisSquare(HWND hwnd, POINT mouse)
 	if (!mouse.x && !mouse.y) return FALSE;
 
 	BOOL retvalue = FALSE;
-	int i, j
+	int i, j;
 	char sel_square[2] = {'n', 'o'}, sel_piece = '\0';
 
 	for (i = 0; i < 8; i++) {
