@@ -313,12 +313,14 @@ int _fillMoveLists(ch_template chb[][8], MoveNode ***move_array, int flag)
 			t_st[1] = chb[i][j].square[1];
 			if (chb[i][j].current == PAWN) {
 				if (chb[i][j].c == BLACK && (flag == ALL || flag == BLACK)) {
-					if (i == 1 && !(chb[i+2][j].occ) && !(chb[i+1][j].occ)) {
-						t_en[0] = chb[i+2][j].square[0];
-						t_en[1] = chb[i+2][j].square[1];
-						_addMove(&black_m[0], t_st, t_en);
-						black_move_count++;
-						move_count++;
+					if (i == 1) {
+						if (!(chb[i+2][j].occ) && !(chb[i+1][j].occ)) {
+							t_en[0] = chb[i+2][j].square[0];
+							t_en[1] = chb[i+2][j].square[1];
+							_addMove(&black_m[0], t_st, t_en);
+							black_move_count++;
+							move_count++;
+						}
 					}
 					/*if (i == 3) {
 						if (w_enpassant_round_left) {
@@ -339,32 +341,40 @@ int _fillMoveLists(ch_template chb[][8], MoveNode ***move_array, int flag)
 							}
 						}
 					}*/
-					t_en[1] = chb[i+1][j].square[1];
-					if (chb[i+1][j].occ == false) {
-						t_en[0] = chb[i+1][j].square[0];
-						_addMove(&black_m[0], t_st, t_en);
-						black_move_count++;
-						move_count++;
-					}
-					if (chb[i+1][j+1].c == WHITE) {
-						t_en[0] = chb[i+1][j+1].square[0];
-						_addMove(&black_m[0], t_st, t_en);
-						black_move_count++;
-						move_count++;
-					} 
-					if (chb[i+1][j-1].c == WHITE) {
-						t_en[0] = chb[i+1][j-1].square[0];
-						_addMove(&black_m[0], t_st, t_en);
-						black_move_count++;
-						move_count++;
+					if (i + 1 <= 7) {
+						t_en[1] = chb[i+1][j].square[1];
+						if (chb[i+1][j].occ == false) {
+							t_en[0] = chb[i+1][j].square[0];
+							_addMove(&black_m[0], t_st, t_en);
+							black_move_count++;
+							move_count++;
+						}
+						if (j + 1 <= 7) {
+							if (chb[i+1][j+1].c == WHITE) {
+								t_en[0] = chb[i+1][j+1].square[0];
+								_addMove(&black_m[0], t_st, t_en);
+								black_move_count++;
+								move_count++;
+							}
+						}
+						if (j - 1 >= 0) {
+							if (chb[i+1][j-1].c == WHITE) {
+								t_en[0] = chb[i+1][j-1].square[0];
+								_addMove(&black_m[0], t_st, t_en);
+								black_move_count++;
+								move_count++;
+							}
+						}
 					}
 				} else if (chb[i][j].c == WHITE && (flag == ALL || flag == WHITE)) {
-					if (i == 6 && !(chb[i-2][j].occ) && !(chb[i-1][j].occ)) {
-						t_en[0] = chb[i-2][j].square[0];
-						t_en[1] = chb[i-2][j].square[1];
-						_addMove(&white_m[0], t_st, t_en);
-						white_move_count++;
-						move_count++;
+					if (i == 6) {
+						if (!(chb[i-2][j].occ) && !(chb[i-1][j].occ)) {
+							t_en[0] = chb[i-2][j].square[0];
+							t_en[1] = chb[i-2][j].square[1];
+							_addMove(&white_m[0], t_st, t_en);
+							white_move_count++;
+							move_count++;
+						}
 					}
 					/*if (i == 4) {
 						if (b_enpassant_round_left) {
@@ -385,24 +395,30 @@ int _fillMoveLists(ch_template chb[][8], MoveNode ***move_array, int flag)
 							}
 						}
 					}*/
-					t_en[1] = chb[i-1][j].square[1];
-					if (chb[i-1][j].occ == false) {
-						t_en[0] = chb[i-1][j].square[0];
-						_addMove(&white_m[0], t_st, t_en);
-						white_move_count++;
-						move_count++;
-					}
-					if (chb[i-1][j+1].c == BLACK) {
-						t_en[0] = chb[i-1][j+1].square[0];
-						_addMove(&white_m[0], t_st, t_en);
-						white_move_count++;
-						move_count++;
-					} 
-					if (chb[i-1][j-1].c == BLACK) {
-						t_en[0] = chb[i-1][j-1].square[0];
-						_addMove(&white_m[0], t_st, t_en);
-						white_move_count++;
-						move_count++;
+					if (i - 1 >= 0) {
+						t_en[1] = chb[i-1][j].square[1];
+						if (chb[i-1][j].occ == false) {
+							t_en[0] = chb[i-1][j].square[0];
+							_addMove(&white_m[0], t_st, t_en);
+							white_move_count++;
+							move_count++;
+						}
+						if (j + 1 <= 7) {
+							if (chb[i-1][j+1].c == BLACK) {
+								t_en[0] = chb[i-1][j+1].square[0];
+								_addMove(&white_m[0], t_st, t_en);
+								white_move_count++;
+								move_count++;
+							}
+						}
+						if (j - 1 >= 0) {
+							if (chb[i-1][j-1].c == BLACK) {
+								t_en[0] = chb[i-1][j-1].square[0];
+								_addMove(&white_m[0], t_st, t_en);
+								white_move_count++;
+								move_count++;
+							}
+						}
 					}
 				}
 			}
@@ -730,7 +746,7 @@ int _fillMoveLists(ch_template chb[][8], MoveNode ***move_array, int flag)
 			}
 			if (check_castling.WR_right) {
 				if (!chb[7][5].occ && !chb[7][6].occ) {
-					_addMove(&white_m[1], "E1", "C1");
+					_addMove(&white_m[1], "E1", "G1");
 				}
 			}
 		}

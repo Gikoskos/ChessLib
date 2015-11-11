@@ -9,7 +9,7 @@
 #include <chesslib.h>
 #include <chlib-cli.h> 
 
-#define TEST_DEPTH 10
+#define TEST_DEPTH 5
 
 int main(void)
 {

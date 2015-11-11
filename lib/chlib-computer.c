@@ -61,19 +61,18 @@ void _addToAIHeap(void **x);
 void _printAIMoveTree(MoveTreeNode *curr_leaf);
 void _createAIMoveTree(MoveTreeNode **curr_leaf, ch_template chb[][8], const int color, const unsigned short depth_count);
 
-
 char *getAImove(ch_template chb[][8], const int color, const unsigned short depth)
 {
 	if (!depth || (color != BLACK && color != WHITE))
 		return NULL;
 
+	char *retvalue = NULL;
 	AIHeap = NULL;
 	CPU_PLAYER = color;
 	max_depth = depth - 1;
 	MoveTreeNode *top = NULL;
-	char *retvalue = NULL;
 	_createAIMoveTree(&top, chb, color, 0);
-#if 0
+#if 1
 	_printAIMoveTree(top);
 #endif
 

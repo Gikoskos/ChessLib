@@ -241,6 +241,8 @@ int getAllMoves(ch_template chb[][8], int c_flag);
 
 int findOnMoveList(MoveNode *llt, char *tofind);
 
+bool makeMove(ch_template chb[][8], char *st_move, char *en_move, const int color);
+
 void initChessboard(ch_template chb[][8]);
 
 void printMoveList(MoveNode *llt, FILE *fd);
@@ -248,8 +250,6 @@ void printMoveList(MoveNode *llt, FILE *fd);
 void deleteMoveList(MoveNode **llt);
 
 void __attribute__((destructor)) deleteMoves();
-
-bool makeMove(ch_template chb[][8], char *st_move, char *en_move, const int color);
 
 void playMoves(ch_template chb[][8], int *round, unsigned short move_count, ...);
 
